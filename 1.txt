@@ -7,3 +7,4 @@ grass grass grass grass grass grass wall grass grass grass wall grass grass gras
 grass grass grass wall wall grass wall wall wall wall wall grass grass grass grass grass
 grass wall grass wall grass grass grass wall grass grass wall grass grass grass grass grass
 grass grass grass wall grass grass grass wall grass grass grass grass grass grass grass grass
+1_1_fire; 0_5_player

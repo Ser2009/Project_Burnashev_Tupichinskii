@@ -18,6 +18,8 @@ def load_image(name, colorkey=None):
 def return_mob(name, x, y, *group):
     if name == 'player':
         return Player(x, y, *group)
+    if name == 'fire':
+        return Fire(x, y, *group)
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
@@ -44,10 +46,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
 
 class Creature:
-    def __init__(self, x, y, image, *group):
+    def __init__(self, x, y, col, row, image, *group):
         self.x = x
         self.y = y
-        self.im = AnimatedSprite(load_image(image), 8, 2, x, y, *group)
+        self.im = AnimatedSprite(load_image(image), col, row, x, y, *group)
 
     def render(self):
         pass
@@ -55,16 +57,16 @@ class Creature:
 
 class Player(Creature):
     def __init__(self, x, y, *group):
-        image = load_image()
-        super().__init__(x, y, image, *group)
+        image = 'player.png'
+        super().__init__(x, y, 8, 1, image, *group)
         self.health = 10
         self.in_fire = False
 
 
 class Fire(Creature):
     def __init__(self, x, y, *group):
-        image = load_image()
-        super().__init__(x, y, image, *group)
+        image = 'fire.png'
+        super().__init__(x, y, 3, 2, image, *group)
 
 
 class Cell(pygame.sprite.Sprite):
@@ -85,14 +87,11 @@ class Field:
         self.cells = pygame.sprite.Group()
         self.mobs = pygame.sprite.Group()
         with open(f"{file_name}.txt") as field:
-            print('hello!')
             for i in range(y):
-                print('hello!')
                 line = field.readline().split()
                 new_line = []
                 for j in range(x):
                     new_line.append((line[j], None))
-                    print('hello!')
                     Cell(j * self.cell_size, i * cell_size, line[j], self.cells)
                 self.field.append(new_line)
             mobs = field.readline().split('; ')
@@ -102,7 +101,13 @@ class Field:
                     x, y, name = int(mob[0]), int(mob[1]), mob[2]
                     if name == 'player':
                         self.pl_coords = (x, y)
-                    self.field[y][x] = (self.field[y][x][0], return_mob(name, x * cell_size, y * cell_size, self.mobs))
+                        pl = return_mob(name, x * cell_size, y * cell_size)
+                        self.pl_sprite = pl.im
+                        self.mobs.add(self.pl_sprite)
+                        self.field[y][x] = (self.field[y][x][0], pl)
+                    else:
+                        self.field[y][x] = (self.field[y][x][0], return_mob(name, x * cell_size, y * cell_size,
+                                                                            self.mobs))
 
     def draw(self, screen):
         self.cells.draw(screen)
@@ -112,18 +117,24 @@ class Field:
     def move(self, x, y):
         x_0, y_0 = self.pl_coords
         x_1, y_1 = x_0 + x, y_0 + y
-        if 0 <= x_1 <= self.x and 0 <= y_1 <= self.y:
-            if self.field[y_1][x_1][0].name == 'wall':
-                return
+        if 0 <= x_1 < self.x and 0 <= y_1 < self.y:
+            if self.field[y_1][x_1][0] == 'wall':
+                return True
             self.pl_coords = x_1, y_1
-            cell, pl = self.field[y][x]
+            cell, pl = self.field[y_0][x_0]
             self.field[y_0][x_0] = cell, None
+            if pl.in_fire:
+                self.field[y_0][x_0] = cell, Fire(x_0, y_0)
             if self.is_fire(x_1, y_1):
                 pl.health -= 1
                 pl.in_fire = True
             else:
                 pl.in_fire = False
             self.field[y_1][x_1] = self.field[y_1][x_1][0], pl
+            self.pl_sprite.rect = self.pl_sprite.rect.move(x * self.cell_size, y * self.cell_size)
+            if pl.health == 0:
+                return False
+        return True
 
     def is_fire(self, x, y):
         if type(self.field[y][x][1]) == Fire:
@@ -155,18 +166,45 @@ class Button:
 
 def level(name, screen):
     game = Field(name, 16, 9, 80)
+    clock = pygame.time.Clock()
+    fps = 24
     run = True
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    alive = game.move(0, -1)
+                elif event.key == pygame.K_s:
+                    alive = game.move(0, 1)
+                elif event.key == pygame.K_a:
+                    alive = game.move(-1, 0)
+                elif event.key == pygame.K_d:
+                    alive = game.move(1, 0)
+                else:
+                    alive = True
+                if not alive:
+                    run = False
         game.draw(screen)
+        clock.tick(fps)
         pygame.display.flip()
     running = False
 
 
 if __name__ == '__main__':
-
+    background = load_image('new_game.png')
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN:
+                    running = False
+        screen.blit(background, (0, 0))
+        pygame.display.flip()
     background = load_image('start.png')
     screen.blit(background, (0, 0))
     buts = []
