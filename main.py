@@ -22,6 +22,29 @@ def return_mob(name, x, y, *group):
         return Fire(x, y, *group)
 
 
+def game_over(level_number):
+    background = load_image('game_over.png')
+    buts_over = []
+    buts_over.append(Button(256, 470, 200, 100, 'restart'))
+    buts_over.append(Button(768, 470, 200, 100, 'menu'))
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for but in buts_over:
+                    if but.get_coords(event.pos[0], event.pos[1]) == 'menu':
+                        running = False
+                    if but.get_coords(event.pos[0], event.pos[1]) == 'restart':
+                        print("lol")
+                        level(level_number, screen)
+        screen.blit(background, (0, 0))
+        for but in buts_over:
+            but.render(screen)
+        pygame.display.flip()
+
+
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y, *group):
         super().__init__(*group)
@@ -82,6 +105,7 @@ class Cell(pygame.sprite.Sprite):
 class Field:
     def __init__(self, file_name, x, y, cell_size):
         self.field = []
+        self.file_name = file_name
         self.x, self.y = x, y
         self.cell_size = cell_size
         self.cells = pygame.sprite.Group()
@@ -133,6 +157,7 @@ class Field:
             self.field[y_1][x_1] = self.field[y_1][x_1][0], pl
             self.pl_sprite.rect = self.pl_sprite.rect.move(x * self.cell_size, y * self.cell_size)
             if pl.health == 0:
+                game_over(self.file_name)
                 return False
         return True
 
@@ -158,10 +183,14 @@ class Button:
 
     def get_coords(self, x, y):
         if self.x <= x <= self.x + self.w and self.y <= y <= self.y + self.h:
+            if self.text == 'menu':
+                return 'menu'
+            if self.text == 'restart':
+                return 'restart'
             self.clicked()
 
     def clicked(self):
-        level(self.text, screen)
+            level(self.text, screen)
 
 
 def level(name, screen):
