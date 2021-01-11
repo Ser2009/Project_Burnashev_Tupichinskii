@@ -5,6 +5,7 @@ import sys
 pygame.init()
 size = width, height = 1280, 720
 screen = pygame.display.set_mode(size)
+pygame.display.set_caption('300 dungeons for 300 bucks')
 
 
 def load_image(name, colorkey=None):
