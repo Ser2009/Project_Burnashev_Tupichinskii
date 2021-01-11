@@ -37,7 +37,6 @@ def game_over(level_number):
                     if but.get_coords(event.pos[0], event.pos[1]) == 'menu':
                         running = False
                     if but.get_coords(event.pos[0], event.pos[1]) == 'restart':
-                        print("lol")
                         level(level_number, screen)
         screen.blit(background, (0, 0))
         for but in buts_over:

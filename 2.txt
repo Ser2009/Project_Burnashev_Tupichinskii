@@ -1,0 +1,10 @@
+floor floor floor floor floor floor floor bricks floor floor floor floor floor bricks bricks bricks
+floor floor bricks floor floor bricks floor floor floor floor bricks floor floor floor floor bricks
+floor bricks bricks bricks bricks bricks bricks bricks bricks bricks bricks bricks bricks bricks floor floor
+floor bricks floor floor floor floor floor floor floor floor floor floor floor bricks bricks floor
+floor bricks floor floor floor floor floor floor floor floor floor floor floor bricks floor floor
+floor bricks floor floor floor floor floor floor floor floor floor floor floor bricks floor floor
+bricks bricks floor bricks bricks bricks bricks bricks bricks bricks bricks bricks bricks bricks floor bricks
+floor bricks floor floor bricks floor floor floor bricks floor floor floor bricks floor floor floor
+floor floor floor floor floor floor floor floor floor floor floor floor floor floor floor bricks
+0_5_player; 0_0_fire; 4_1_fire; 8_0_fire; 12_0_fire; 15_4_fire; 15_5_fire; 3_5_fire; 3_4_fire; 5_3_fire; 5_4_fire; 7_4_fire; 7_5_fire; 6_8_fire; 9_3_fire; 9_4_fire; 11_4_fire; 11_5_fire; 12_3_star
