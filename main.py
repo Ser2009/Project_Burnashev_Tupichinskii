@@ -8,7 +8,7 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption('300 dungeons for 300 bucks')
 
 
-def load_image(name, colorkey=None):
+def load_image(name, colorkey=None):  # Загрузка изображений
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
         sys.exit()
@@ -16,14 +16,14 @@ def load_image(name, colorkey=None):
     return image
 
 
-def return_mob(name, x, y, *group):
+def return_mob(name, x, y, *group):  # Функция, возвращающая объект нужного класса по принятой строке
     if name == 'player':
         return Player(x, y, *group)
     if name == 'fire':
         return Fire(x, y, *group)
 
 
-def game_over(level_number):
+def game_over(level_number):  # Заставка в случае проигрыша
     background = load_image('game_over.png')
     buts_over = []
     buts_over.append(Button(256, 470, 200, 100, 'restart'))
@@ -46,7 +46,7 @@ def game_over(level_number):
         pygame.display.flip()
 
 
-def win():
+def win():  # Заставка в случае победы
     background = load_image('you_win.png')
     buts_over = []
     buts_over.append(Button(540, 470, 200, 100, 'menu'))
@@ -65,7 +65,7 @@ def win():
         pygame.display.flip()
 
 
-class AnimatedSprite(pygame.sprite.Sprite):
+class AnimatedSprite(pygame.sprite.Sprite):  # Класс анимированного спрайта
     def __init__(self, sheet, columns, rows, x, y, *group):
         super().__init__(*group)
         self.frames = []
@@ -88,17 +88,14 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
 
 
-class Creature:
+class Creature:  # Базовый класс всех существ
     def __init__(self, x, y, col, row, image, *group):
         self.x = x
         self.y = y
         self.im = AnimatedSprite(load_image(image), col, row, x, y, *group)
 
-    def render(self):
-        pass
 
-
-class Player(Creature):
+class Player(Creature):  # Класс игрока
     def __init__(self, x, y, *group):
         image = 'player.png'
         super().__init__(x, y, 8, 1, image, *group)
@@ -106,13 +103,13 @@ class Player(Creature):
         self.in_fire = False
 
 
-class Fire(Creature):
+class Fire(Creature):  # Класс огня
     def __init__(self, x, y, *group):
         image = 'fire.png'
         super().__init__(x, y, 3, 2, image, *group)
 
 
-class Cell(pygame.sprite.Sprite):
+class Cell(pygame.sprite.Sprite):  # Класс клетки, наследованный от спрайта
     def __init__(self, x, y, im_name, *group):
         super().__init__(*group)
         self.image = load_image(f"{im_name}.png")
@@ -122,7 +119,7 @@ class Cell(pygame.sprite.Sprite):
         self.name = im_name
 
 
-class Star(pygame.sprite.Sprite):
+class Star(pygame.sprite.Sprite):  # Класс звезды, наследованный от спрайта
     def __init__(self, x, y, *group):
         super().__init__(*group)
         self.image = load_image("star.png")
@@ -131,7 +128,7 @@ class Star(pygame.sprite.Sprite):
         self.rect.y = y
 
 
-class Field:
+class Field:  # Класс поля, который фактически реализуют бОльшую часть функциональности
     def __init__(self, file_name, x, y, cell_size):
         self.opened = False
         self.count = 0
@@ -172,13 +169,13 @@ class Field:
                 x, y = int(star[0]), int(star[1])
                 self.field[y][x] = (self.field[y][x][0], Star(x * cell_size, y * cell_size, self.stars))
 
-    def draw(self, screen):
+    def draw(self, screen):  # Отрисовка поля и объектов на нем
         self.cells.draw(screen)
         self.stars.draw(screen)
         self.mobs.update()
         self.mobs.draw(screen)
 
-    def move(self, x, y):
+    def move(self, x, y):  # Движение персонажа с обработкой различных событий
         x_0, y_0 = self.pl_coords
         x_1, y_1 = x_0 + x, y_0 + y
         if 0 <= x_1 < self.x and 0 <= y_1 < self.y:
@@ -210,22 +207,22 @@ class Field:
                 return False
         return True
 
-    def is_fire(self, x, y):
+    def is_fire(self, x, y):  # Проверка, есть ли на пути огонь
         if type(self.field[y][x][1]) == Fire:
             return True
         return False
 
-    def open(self):
+    def open(self):  # Открытие выхода
         x, y = self.door
         Cell(x * self.cell_size, y * self.cell_size, 'blm', self.cells)
         self.opened = True
 
 
-class Button:
+class Button:  # Класс Кнопки
     def __init__(self, x, y, w, h, text):
         self.x, self.y, self.w, self.h, self.text = x, y, w, h, text
 
-    def render(self, screen):
+    def render(self, screen):  # Отрисовка кнопки
         screen.fill(pygame.Color(167, 2, 2), (self.x, self.y, self.w, self.h))
         font = pygame.font.Font(None, 50)
         text = font.render(self.text, True, (0, 0, 0))
@@ -235,7 +232,7 @@ class Button:
         text_y = self.y + (self.h - text_h) // 2
         screen.blit(text, (text_x, text_y))
 
-    def get_coords(self, x, y):
+    def get_coords(self, x, y):  # Обработка кликов мыши
         if self.x <= x <= self.x + self.w and self.y <= y <= self.y + self.h:
             if self.text == 'menu':
                 return 'menu'
@@ -243,11 +240,11 @@ class Button:
                 return 'restart'
             self.clicked()
 
-    def clicked(self):
-            level(self.text, screen)
+    def clicked(self):  # Запуск уровня
+        level(self.text, screen)
 
 
-def level(name, screen):
+def level(name, screen):  # Функция с циклом уровня
     game = Field(name, 16, 9, 80)
     clock = pygame.time.Clock()
     fps = 24
@@ -296,7 +293,7 @@ if __name__ == '__main__':
         screen.blit(background, (0, 0))
         buts = []
         for i in range(3):
-            buts.append(Button(170 + i * (200 + 170), 310, 200, 100, str(i + 1)))
+            buts.append(Button(170 + i * 370, 310, 200, 100, str(i + 1)))
         running = True
         while running:
             for event in pygame.event.get():
