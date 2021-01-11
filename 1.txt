@@ -8,3 +8,4 @@ grass grass grass wall wall grass wall wall wall wall wall grass grass grass gra
 grass wall grass wall grass grass grass wall grass grass wall grass grass grass trapdoor grass
 grass grass grass wall grass grass grass wall grass grass grass grass grass grass grass grass
 0_5_player; 0_7_fire; 1_1_fire; 8_4_fire; 5_7_fire; 10_8_fire; 13_7_fire; 13_6_fire; 14_6_fire; 15_6_fire; 15_7_fire; 15_8_fire
+0_0; 0_8; 4_7; 9_4; 8_7

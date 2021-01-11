@@ -37,7 +37,27 @@ def game_over(level_number):
                     if but.get_coords(event.pos[0], event.pos[1]) == 'menu':
                         running = False
                     if but.get_coords(event.pos[0], event.pos[1]) == 'restart':
+                        running = False
                         level(level_number, screen)
+        screen.blit(background, (0, 0))
+        for but in buts_over:
+            but.render(screen)
+        pygame.display.flip()
+
+
+def win():
+    background = load_image('you_win.png')
+    buts_over = []
+    buts_over.append(Button(540, 470, 200, 100, 'menu'))
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for but in buts_over:
+                    if but.get_coords(event.pos[0], event.pos[1]) == 'menu':
+                        running = False
         screen.blit(background, (0, 0))
         for but in buts_over:
             but.render(screen)
@@ -101,19 +121,33 @@ class Cell(pygame.sprite.Sprite):
         self.name = im_name
 
 
+class Star(pygame.sprite.Sprite):
+    def __init__(self, x, y, *group):
+        super().__init__(*group)
+        self.image = load_image("star.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
 class Field:
     def __init__(self, file_name, x, y, cell_size):
+        self.opened = False
+        self.count = 0
         self.field = []
         self.file_name = file_name
         self.x, self.y = x, y
         self.cell_size = cell_size
         self.cells = pygame.sprite.Group()
         self.mobs = pygame.sprite.Group()
+        self.stars = pygame.sprite.Group()
         with open(f"{file_name}.txt") as field:
             for i in range(y):
                 line = field.readline().split()
                 new_line = []
                 for j in range(x):
+                    if line[j] == 'trapdoor':
+                        self.door = j, i
                     new_line.append((line[j], None))
                     Cell(j * self.cell_size, i * cell_size, line[j], self.cells)
                 self.field.append(new_line)
@@ -131,9 +165,15 @@ class Field:
                     else:
                         self.field[y][x] = (self.field[y][x][0], return_mob(name, x * cell_size, y * cell_size,
                                                                             self.mobs))
+            stars = field.readline().split('; ')
+            for star in stars:
+                star = star.split('_')
+                x, y = int(star[0]), int(star[1])
+                self.field[y][x] = (self.field[y][x][0], Star(x * cell_size, y * cell_size, self.stars))
 
     def draw(self, screen):
         self.cells.draw(screen)
+        self.stars.draw(screen)
         self.mobs.update()
         self.mobs.draw(screen)
 
@@ -143,6 +183,9 @@ class Field:
         if 0 <= x_1 < self.x and 0 <= y_1 < self.y:
             if self.field[y_1][x_1][0] == 'wall':
                 return True
+            if type(self.field[y_1][x_1][1]) == Star:
+                self.count += 1
+                self.field[y_1][x_1][1].kill()
             self.pl_coords = x_1, y_1
             cell, pl = self.field[y_0][x_0]
             self.field[y_0][x_0] = cell, None
@@ -158,12 +201,22 @@ class Field:
             if pl.health == 0:
                 game_over(self.file_name)
                 return False
+            if self.count == 5 and not self.opened:
+                self.open()
+            if self.opened and self.door == (x_1, y_1):
+                win()
+                return False
         return True
 
     def is_fire(self, x, y):
         if type(self.field[y][x][1]) == Fire:
             return True
         return False
+
+    def open(self):
+        x, y = self.door
+        Cell(x * self.cell_size, y * self.cell_size, 'blm', self.cells)
+        self.opened = True
 
 
 class Button:
@@ -231,23 +284,29 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN:
                     running = False
-        screen.blit(background, (0, 0))
-        pygame.display.flip()
+        try:
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+        except:
+            pass
     background = load_image('start.png')
-    screen.blit(background, (0, 0))
-    buts = []
-    for i in range(3):
-        buts.append(Button(170 + i * (200 + 170), 310, 200, 100, str(i + 1)))
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                for but in buts:
-                    but.get_coords(event.pos[0], event.pos[1])
+    try:
         screen.blit(background, (0, 0))
-        for but in buts:
-            but.render(screen)
-        pygame.display.flip()
+        buts = []
+        for i in range(3):
+            buts.append(Button(170 + i * (200 + 170), 310, 200, 100, str(i + 1)))
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for but in buts:
+                        but.get_coords(event.pos[0], event.pos[1])
+            screen.blit(background, (0, 0))
+            for but in buts:
+                but.render(screen)
+            pygame.display.flip()
+    except:
+        pass
     pygame.quit()
