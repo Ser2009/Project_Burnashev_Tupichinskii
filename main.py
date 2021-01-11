@@ -181,7 +181,8 @@ class Field:
         x_0, y_0 = self.pl_coords
         x_1, y_1 = x_0 + x, y_0 + y
         if 0 <= x_1 < self.x and 0 <= y_1 < self.y:
-            if self.field[y_1][x_1][0] == 'wall':
+            if self.field[y_1][x_1][0] == 'wall' or self.field[y_1][x_1][0] == 'bricks'\
+                    or self.field[y_1][x_1][0] == 'bricks_wall':
                 return True
             if type(self.field[y_1][x_1][1]) == Star:
                 self.count += 1

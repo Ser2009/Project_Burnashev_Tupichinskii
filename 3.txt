@@ -1,0 +1,11 @@
+hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor
+hot_floor bricks_wall bricks_wall bricks_wall hot_floor hot_floor bricks_wall bricks_wall bricks_wall bricks_wall bricks_wall hot_floor bricks_wall hot_floor bricks_wall hot_floor
+hot_floor bricks_wall hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall trapdoor bricks_wall hot_floor
+hot_floor bricks_wall hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor
+hot_floor bricks_wall bricks_wall bricks_wall hot_floor hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor
+hot_floor bricks_wall hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor
+hot_floor bricks_wall hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor bricks_wall hot_floor
+hot_floor bricks_wall hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor hot_floor hot_floor bricks_wall hot_floor bricks_wall hot_floor
+hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor hot_floor
+13_6_player; 15_7_fire; 15_8_fire; 15_6_fire; 13_7_fire; 13_1_fire; 13_0_fire; 0_0_fire; 15_0_fire; 4_1_fire; 5_3_fire; 6_3_fire; 6_5_fire; 5_7_fire; 6_7_fire; 7_7_fire
+4_4; 0_3; 7_2; 0_7; 15_8
